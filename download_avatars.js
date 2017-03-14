@@ -32,6 +32,7 @@ function getRepoContributors(cb) {
 
 
 function downloadImageByURL(url, filePath) {
+
   request.get(url)
    .on('error', function(error){
      console.log('Error!');
@@ -41,11 +42,16 @@ function downloadImageByURL(url, filePath) {
      //console.log(response.headers);
    })
    .pipe(fs.createWriteStream(filePath));
+
  }
 
 
 getRepoContributors(function(err, response) {
+ if (repoName && repoOwner) {
  for(var i in response){
   downloadImageByURL(response[i]['avatar_url'], 'avatars/'+response[i]['login']+'.jpg');
  }
+} else {
+  console.log("Please provide repo owner and name");
+}
 });

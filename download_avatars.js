@@ -1,18 +1,19 @@
 var request = require('request');
 var fs = require('fs');
-var link = 'https://api.github.com/repos/jquery/jquery/contributors';
 var GITHUB_USER = 'j-miles';
-var GITHUB_TOKEN = '332851383fea7493037f0bcc27581247ef63230fe';
+var GITHUB_TOKEN = '553dbb9b1de65e47a0b9ec7e535fee95392a862e';
+var repoOwner = process.argv[2];
+var repoName = process.argv[3];
+var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
 var options = {
- url: link,
+ url: requestURL,
  headers: {
    'User-Agent': 'j-miles'
  }
 };
 
 
-function getRepoContributors(repoOwner, repoName, cb) {
- var requestURL = 'https://'+ GITHUB_USER + ':' + GITHUB_TOKEN + '@api.github.com/repos/' + repoOwner + '/' + repoName + '/contributors';
+function getRepoContributors(cb) {
  request(options, function(error, response, body) {
    if(error) {
      console.log('Error: ' + error);
@@ -37,13 +38,13 @@ function downloadImageByURL(url, filePath) {
      throw error;
    })
    .on('response', function(response){
-     console.log(response.headers);
+     //console.log(response.headers);
    })
    .pipe(fs.createWriteStream(filePath));
  }
 
 
-getRepoContributors("jquery", "jquery", function(err, response) {
+getRepoContributors(function(err, response) {
  for(var i in response){
   downloadImageByURL(response[i]['avatar_url'], 'avatars/'+response[i]['login']+'.jpg');
  }
